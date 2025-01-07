@@ -1,14 +1,28 @@
-# Welcome to your CDK TypeScript project
+# cdk-with-previews
 
-This is a blank project for CDK development with TypeScript.
+This is an example project that shows how to setup previews for a CDK project. **I have not tested this infra, so do not run `npx cdk deploy`!!**
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## How this works
 
-## Useful commands
+This creates two standard stacks, `staging` and `prod`. This also gives the ability to set up a stack for previews if you pass in either `BRANCH_NAME` or `TARGET_AWS_ACCOUNT`.
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+### Why do I need `TARGET_AWS_ACCOUNT`
+
+This gives you the ability to deploy the same infrastructure to any account. If you pass this environment variable, it will ignore the variable in the configuration, and use this account id. This is useful for local dev!
+
+### Why do I need `BRANCH_NAME`?
+
+This creates a new stack that is specific for this branch to prevent concurrent PRs to over write eachother. This should stay the same through out PRs.
+
+## How it works
+
+When you open a PR, the action will call CDK deploy like so: `BRANCH_NAME=<github-branch-name> npx cdk deploy <github-branch-name>-preview-InfraWithPreviewsStack`.
+
+When you close a PR, the action will call `BRANCH_NAME=<github-branch-name> npx cdk destroy <github-branch-name>-preview-InfraWithPreviewsStack`.
+
+## Examples
+
+1. PR with previews "deployed:" https://github.com/radding/cdk-with-previews/pull/3
+2. PR that was closed: https://github.com/radding/cdk-with-previews/pull/2
+3. Clean up action: https://github.com/radding/cdk-with-previews/actions/runs/12655882898
+4. Main deploy action: https://github.com/radding/cdk-with-previews/actions/runs/12655882856
