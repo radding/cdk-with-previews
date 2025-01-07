@@ -51,7 +51,7 @@ Object.entries(envs).forEach(([envName, envSettings]) => {
 if (process.env.BRANCH_NAME || process.env.TARGET_AWS_ACCOUNT) {
   let name = `preview`;
   if (process.env.BRANCH_NAME) {
-    name = `${process.env.BRANCH_NAME}-${name}`;
+    name = `${process.env.BRANCH_NAME.replace("_", "-")}-${name}`;
   }
 
   new InfraWithPreviewsStack(app, `${name}-InfraWithPreviews`, {
