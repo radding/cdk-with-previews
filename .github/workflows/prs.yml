@@ -1,0 +1,26 @@
+name: deploy preview
+
+on:
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: install deps
+        shell: bash
+        run: npm i
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - name: Notice
+        shell: bash
+        run: echo "PRETEND I AM PUSHING A PREVIEW ENVIRONMENT CALLED ${{steps.extract_branch.outputs.branch}}-preview-InfraWithPreviewsStack"
+      - name: Deploy branch
+        shell: bash
+        run: BRANCH_NAME=${{ steps.extract_branch.outputs.branch }} npx cdk synth ${{steps.extract_branch.outputs.branch}}-preview-InfraWithPreviewsStack

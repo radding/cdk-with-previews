@@ -1,0 +1,31 @@
+name: Stage and Prod Deployment
+
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: install deps
+        shell: bash
+        run: npm i
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - name: Deploy branch
+        shell: bash
+        run: echo "pretend I am deploying stage" && npx cdk synth staging-InfraWithPreviewsStack
+
+      - name: Test
+        shell: bash
+        run: echo "HERE IS WHERE I WOULD TEST STAGING, IF I HAD ANY"
+
+      - name: Deploy branch
+        shell: bash
+        run: echo "pretend I am deploying prod" && npx cdk synth prod-InfraWithPreviewsStack
