@@ -21,6 +21,9 @@ jobs:
       - name: Notice
         shell: bash
         run: echo "PRETEND I AM PUSHING A PREVIEW ENVIRONMENT CALLED ${{steps.extract_branch.outputs.branch}}-preview-InfraWithPreviewsStack"
+      - name: list branches
+        shell: bash
+        run: BRANCH_NAME=${{ steps.extract_branch.outputs.branch }} npx cdk ls
       - name: Deploy branch
         shell: bash
         run: BRANCH_NAME=${{ steps.extract_branch.outputs.branch }} npx cdk synth ${{steps.extract_branch.outputs.branch}}-preview-InfraWithPreviewsStack
