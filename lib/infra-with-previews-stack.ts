@@ -33,7 +33,6 @@ export class InfraWithPreviewsStack extends cdk.Stack {
     })
 
     distro.cloudFrontWebDistribution.addBehavior("api/**", FunctionUrlOrigin.withOriginAccessControl(fnURL))
-    distro.cloudFrontWebDistribution.addBehavior("api2/**", FunctionUrlOrigin.withOriginAccessControl(fnURL))
 
     // The code that defines your stack goes here
 
